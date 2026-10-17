@@ -36,6 +36,39 @@ class VLCMenu : public QMenu
     Q_OBJECT
 
 public:
+    static inline const char * const figmaMenuStyleSheet =
+        "QMenu {"
+        "    background-color: #1E1E1E;"
+        "    color: #CCCCCC;"
+        "    border: 1px solid #2B2B2B;"
+        "    border-radius: 6px;"
+        "    padding: 4px 2px;"
+        "}"
+        "QMenu::item {"
+        "    background-color: transparent;"
+        "    color: #CCCCCC;"
+        "    padding: 6px 20px 6px 12px;"
+        "    border-radius: 4px;"
+        "    margin: 1px 4px;"
+        "    font-size: 13px;"
+        "}"
+        "QMenu::item:selected {"
+        "    background-color: #2A2A2A;"
+        "    color: #D37918;"
+        "}"
+        "QMenu::item:disabled {"
+        "    color: #555555;"
+        "}"
+        "QMenu::separator {"
+        "    height: 1px;"
+        "    background-color: #2E2E2E;"
+        "    margin: 4px 8px;"
+        "}"
+        "QMenu::indicator {"
+        "    width: 14px;"
+        "    height: 14px;"
+        "}";
+
     explicit VLCMenu(qt_intf_t* p_intf) : QMenu()
     {
         assert(p_intf);
@@ -43,6 +76,7 @@ public:
         {
             QVLCDialog::setWindowTransientParent(this, nullptr, p_intf);
         }
+        setStyleSheet(figmaMenuStyleSheet);
     }
 
     explicit VLCMenu(const QString& title, qt_intf_t* p_intf) : VLCMenu(p_intf)
@@ -53,6 +87,7 @@ public:
     explicit VLCMenu(const QString &title, QWidget *parent) : QMenu(title, parent)
     {
         assert(parent); // use VLCMenu(qt_intf_t* p_intf) if parent is null pointer
+        setStyleSheet(figmaMenuStyleSheet);
     }
 };
 

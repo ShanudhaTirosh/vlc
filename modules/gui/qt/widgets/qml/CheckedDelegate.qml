@@ -46,10 +46,11 @@ T.ItemDelegate {
         enabled: control.enabled
     }
 
-    background: Widgets.AnimatedBackground {
-        enabled: theme.initialized
-        color: control.checked ? theme.bg.highlight : theme.bg.primary
-        border.color: visualFocus ? theme.visualFocus : Qt.alpha(theme.visualFocus, 0.0)
+    background: Rectangle {
+        radius: VLCDesignTokens.radiusButton
+        color: control.checked ? VLCDesignTokens.bgDark0 : (control.hovered ? VLCDesignTokens.bgDark2 : "transparent")
+        border.color: control.visualFocus ? VLCDesignTokens.primaryOrange : (control.checked ? VLCDesignTokens.borderSubtle : "transparent")
+        border.width: 1
     }
 
     contentItem: Item { // don't use a row, it will move text when control is unchecked
@@ -64,7 +65,7 @@ T.ItemDelegate {
 
             text: VLCIcons.check
 
-            color: theme.fg.primary
+            color: VLCDesignTokens.primaryOrange
 
             font.pixelSize: VLCStyle.icon_track
         }
@@ -84,7 +85,7 @@ T.ItemDelegate {
             text: control.text
             font: control.font
 
-            color: theme.fg.primary
+            color: control.checked ? VLCDesignTokens.textPrimary : VLCDesignTokens.textSecondary
         }
     }
 }

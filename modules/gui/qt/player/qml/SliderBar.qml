@@ -28,20 +28,20 @@ import VLC.MainInterface
 T.ProgressBar {
     id: control
 
-    readonly property real _hoveredScalingFactor: 1.8
-    property int barHeight: VLCStyle.dp(5, VLCStyle.scale)
-    readonly property real _scaledBarHeight: control.barHeight * _hoveredScalingFactor
-    readonly property real _scaledY: (-control.barHeight / 2) * (control._hoveredScalingFactor - 1)
+    readonly property real _hoveredScalingFactor: 2.0
+    property int barHeight: VLCDesignTokens.seekbarHeightResting
+    readonly property real _scaledBarHeight: VLCDesignTokens.seekbarHeightHover
+    readonly property real _scaledY: -(VLCDesignTokens.seekbarHeightHover - VLCDesignTokens.seekbarHeightResting) / 2.0
 
     property bool _isSeekPointsShown: true
     readonly property int _seekPointsDistance: VLCStyle.dp(2, VLCStyle.scale)
-    readonly property int _seekPointsRadius: VLCStyle.dp(0.5, VLCStyle.scale)
-    readonly property real _scaledSeekPointsRadius: _seekPointsRadius * _hoveredScalingFactor
+    readonly property int _seekPointsRadius: 0
+    readonly property real _scaledSeekPointsRadius: 0
 
     property bool _currentChapterHovered: false
     property real _tooltipPosition: (Widgets.PointingToolTipAttached.instance?.pos.x ?? 0.0) / width
 
-    property color backgroundColor: theme.bg.primary
+    property color backgroundColor: VLCDesignTokens.bgInput
     property real touchHandlerMargin: VLCStyle.touchHandlerMargin
 
     Keys.onRightPressed: Player.jumpFwd()
@@ -357,7 +357,7 @@ T.ProgressBar {
                     readonly property bool _hovered: hoverHandler.hovered &&
                                             (hoverHandler.point.position.x > x && hoverHandler.point.position.x < x+width)
 
-                    color: _currentChapter < 0 ? theme.fg.primary : control.backgroundColor
+                    color: _currentChapter < 0 ? VLCDesignTokens.accentOrange : control.backgroundColor
                     width: sliderRect.width * seekpointsRect.endPosition - x - control._seekPointsDistance
                     x: sliderRect.width * seekpointsRect.startPosition
 
@@ -370,7 +370,7 @@ T.ProgressBar {
 
                         width: sliderRect.width * control.visualPosition - parent.x - control._seekPointsDistance
                         visible: parent._currentChapter === 0
-                        color: theme.fg.primary
+                        color: VLCDesignTokens.accentOrange
 
                         // We use dynamic mutability group because time interpolation
                         // may induce rapid change:
@@ -431,7 +431,7 @@ T.ProgressBar {
             id: progressRect
             width: control.visualPosition * parent.width
             visible: !Player.hasChapters
-            color: theme.fg.primary
+            color: VLCDesignTokens.accentOrange
             height: control.barHeight
             radius: control._seekPointsRadius
 

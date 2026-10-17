@@ -32,5 +32,30 @@ Widgets.IconToolButton {
 
     AccessibleCompat.id: "extendedSettingsButton"
 
-    onClicked: DialogsProvider.extendedDialog()
+    onClicked: {
+        effectsDrawerLoader.active = true
+        if (effectsDrawerLoader.item) {
+            effectsDrawerLoader.item.visible = !effectsDrawerLoader.item.visible
+        } else {
+            DialogsProvider.extendedDialog()
+        }
+    }
+
+    Loader {
+        id: effectsDrawerLoader
+        active: false
+        sourceComponent: AudioDSPDrawer {
+            id: drawer
+            parent: (typeof rootPlayer !== 'undefined' && rootPlayer) ? rootPlayer : ((typeof g_mainDisplay !== 'undefined' && g_mainDisplay) ? g_mainDisplay : extdSettingsBtn)
+            anchors.right: parent ? parent.right : undefined
+            anchors.top: parent ? parent.top : undefined
+            anchors.bottom: parent ? parent.bottom : undefined
+            z: 99
+
+            onCloseRequested: {
+                drawer.visible = false
+                effectsDrawerLoader.active = false
+            }
+        }
+    }
 }

@@ -46,14 +46,13 @@ Item {
         height: Math.max(progressBar.radius * 2, //to have at least the proper radius applied
                          parent.height + radius) //the top radius section should be always clipped
 
-        //FIXME do we want it always white or do we want it to change with the theme
-        color: "white"
+        color: VLCDesignTokens.bgDark0
         radius: progressBar.radius
 
         gradient: Gradient {
             orientation: Gradient.Horizontal
-            GradientStop { position: progressBar.value; color: theme.fg.primary }
-            GradientStop { position: progressBar.value + (1. / rectangle.width); color: rectangle.color }
+            GradientStop { position: progressBar.value; color: VLCDesignTokens.primaryOrange }
+            GradientStop { position: Math.min(1.0, progressBar.value + (1. / rectangle.width)); color: rectangle.color }
         }
     }
 }

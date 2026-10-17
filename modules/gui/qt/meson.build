@@ -619,7 +619,23 @@ qml_modules += {
         'dialogs/toolbar/qml/EditorTabButton.qml',
         'dialogs/toolbar/qml/ToolbarEditor.qml',
         'dialogs/toolbar/qml/ToolbarEditorDialog.qml',
-        'dialogs/toolbar/qml/ToolbarEditorButtonList.qml'
+        'dialogs/toolbar/qml/ToolbarEditorButtonList.qml',
+        'dialogs/extended/qml/AudioDSPDrawer.qml',
+        'dialogs/extended/qml/EqualizerPanel.qml',
+        'dialogs/extended/qml/CompressorPanel.qml',
+        'dialogs/extended/qml/SpatializerPanel.qml',
+        'dialogs/extended/qml/StereoWidenerPanel.qml',
+        'dialogs/extended/qml/VideoEffectsPanel.qml',
+        'dialogs/extended/qml/SubtitleSyncPanel.qml',
+        'dialogs/preferences/qml/SettingsToggle.qml',
+        'dialogs/preferences/qml/SettingsComboBox.qml',
+        'dialogs/preferences/qml/SettingsSlider.qml',
+        'dialogs/preferences/qml/SettingsSegmentedButton.qml',
+        'dialogs/preferences/qml/SettingsRow.qml',
+        'dialogs/preferences/qml/SettingsSubtitlesView.qml',
+        'dialogs/preferences/qml/SettingsAudioView.qml',
+        'dialogs/preferences/qml/SettingsInterfaceView.qml',
+        'dialogs/preferences/qml/SettingsDialog.qml'
     ),
 }
 
@@ -737,6 +753,8 @@ qml_modules += {
        'player/qml/PlaybackSpeed.qml',
        'player/qml/LyricsFlickable.qml',
        'player/qml/MiniPlayer.qml',
+       'player/qml/MusicPlayerView.qml',
+       'player/qml/WaveformSeekBar.qml',
        'player/qml/PIPPlayer.qml',
        'player/qml/Player.qml',
        'player/qml/PlayerControlLayout.qml',
@@ -810,6 +828,7 @@ qml_modules += {
        'player/qml/controlbarcontrols/TeletextColorButton.qml',
        'player/qml/controlbarcontrols/TeletextWidget.qml',
        'player/qml/controlbarcontrols/VolumeWidget.qml',
+       'player/qml/controlbarcontrols/VolumeCone.qml',
        'player/qml/controlbarcontrols/Fallback.qml',
    ),
 }
@@ -832,6 +851,7 @@ qml_modules += {
     'singletons': files(
         'style/AcrylicController.qml',
         'style/VLCStyle.qml',
+        'style/VLCDesignTokens.qml',
     ),
 }
 
@@ -862,6 +882,7 @@ qml_modules += {
     'outdir' : 'VLC/Widgets',
     'sources': files(
         'widgets/qml/LabelExt.qml',
+        'widgets/qml/DSPSlider.qml',
         'widgets/qml/ActionButtonOverlay.qml',
         'widgets/qml/ActionButtonPrimary.qml',
         'widgets/qml/BannerTabButton.qml',

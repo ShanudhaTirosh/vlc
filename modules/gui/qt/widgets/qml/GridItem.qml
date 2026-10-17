@@ -267,11 +267,14 @@ T.ItemDelegate {
         x: - selectedBorderWidth
         y: - selectedBorderWidth
 
+        radius: VLCDesignTokens.radiusCard
+
         enabled: theme.initialized
 
-        //don't show the backgroud unless selected
-        color: root.selected ?  theme.bg.highlight : theme.bg.primary
-        border.color: visualFocus ? theme.visualFocus : Qt.alpha(theme.visualFocus, 0.0)
+        // Use Figma card colors: dark surface when hovered/selected and orange border
+        color: root.selected ? VLCDesignTokens.bgDark2 : (root.hovered ? VLCDesignTokens.bgDark0 : theme.bg.primary)
+        border.color: root.selected ? VLCDesignTokens.primaryOrange : (visualFocus ? theme.visualFocus : Qt.alpha(theme.visualFocus, 0.0))
+        border.width: root.selected ? 2 : 1
     }
 
     contentItem: ColumnLayout {

@@ -324,7 +324,9 @@ void QmlGlobalMenu::close()
 QmlMenuBarMenu::QmlMenuBarMenu(QmlMenuBar* menubar, QWidget* parent)
     : QMenu(parent)
     , m_menubar(menubar)
-{}
+{
+    setStyleSheet(VLCMenu::figmaMenuStyleSheet);
+}
 
 QmlMenuBarMenu::~QmlMenuBarMenu()
 {

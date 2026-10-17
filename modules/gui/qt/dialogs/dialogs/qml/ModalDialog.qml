@@ -58,9 +58,9 @@ Dialog {
 
             visible: !blur.visible
 
-            color: theme.bg.primary
+            color: "#000000"
 
-            opacity: 0.6
+            opacity: 0.65
         }
 
         Widgets.DualKawaseBlur {
@@ -84,33 +84,76 @@ Dialog {
     }
 
     background: Rectangle {
-        color: theme.bg.primary
+        color: VLCDesignTokens.surfaceCard
+        radius: VLCDesignTokens.radiusCard
+        border.color: VLCDesignTokens.borderSubtle
+        border.width: 1
 
         Widgets.RoundedRectangleShadow {
-            yOffset: VLCStyle.dp(4, VLCStyle.scale)
-            blurRadius: VLCStyle.dp(3, VLCStyle.scale)
+            yOffset: VLCStyle.dp(6, VLCStyle.scale)
+            blurRadius: VLCStyle.dp(12, VLCStyle.scale)
+            radius: VLCDesignTokens.radiusCard
 
             visible: (parent.color.a > 0.0)
 
-            opacity: 0.2
+            opacity: 0.4
 
             color: "black"
         }
     }
 
-    //FIXME use the right xxxLabel class
-    header: T.Label {
-        text: control.title
-        visible: control.title
-        elide: Label.ElideRight
-        font.bold: true
-        color: theme.fg.primary
-        padding: 6
-        background: Rectangle {
-            x: 1; y: 1
-            width: parent.width - 2
-            height: parent.height - 1
-            color: theme.bg.primary
+    header: Rectangle {
+        implicitHeight: control.title.length > 0 ? 44 : 0
+        visible: control.title.length > 0
+        color: VLCDesignTokens.surfaceDark
+        radius: VLCDesignTokens.radiusCard
+
+        // Square off bottom corners so it connects seamlessly to dialog body
+        Rectangle {
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: parent.radius
+            color: parent.color
+        }
+
+        RowLayout {
+            anchors.fill: parent
+            anchors.leftMargin: 16
+            anchors.rightMargin: 12
+            spacing: 8
+
+            Text {
+                Layout.fillWidth: true
+                text: control.title
+                elide: Text.ElideRight
+                font.pixelSize: 14
+                font.weight: Font.DemiBold
+                color: VLCDesignTokens.textPrimary
+            }
+
+            Rectangle {
+                implicitWidth: 26
+                implicitHeight: 26
+                radius: 4
+                color: closeHover.hovered ? VLCDesignTokens.surfaceHover : "transparent"
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "✕"
+                    font.pixelSize: 12
+                    color: closeHover.hovered ? VLCDesignTokens.textPrimary : VLCDesignTokens.textMuted
+                }
+
+                HoverHandler {
+                    id: closeHover
+                    cursorShape: Qt.PointingHandCursor
+                }
+
+                TapHandler {
+                    onTapped: control.reject()
+                }
+            }
         }
     }
 

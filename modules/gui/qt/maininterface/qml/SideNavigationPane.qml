@@ -276,11 +276,26 @@ T.Pane {
                 iconTxt: VLCIcons.settings
                 text: qsTr("Preferences")
 
-                checked: DialogsProvider.prefsDialogVisible
+                checked: DialogsProvider.prefsDialogVisible || (modernSettingsDialogLoader.item && modernSettingsDialogLoader.item.visible)
 
                 showText: root.delegateShowText
 
-                onClicked: DialogsProvider.prefsDialog()
+                onClicked: {
+                    modernSettingsDialogLoader.active = true
+                    if (modernSettingsDialogLoader.item)
+                        modernSettingsDialogLoader.item.open()
+                    else
+                        DialogsProvider.prefsDialog()
+                }
+
+                Loader {
+                    id: modernSettingsDialogLoader
+                    active: false
+                    sourceComponent: SettingsDialog {
+                        parent: g_mainDisplay ? g_mainDisplay : root
+                        onClosed: modernSettingsDialogLoader.active = false
+                    }
+                }
 
                 //SideNavigationDelegate is an ItemDelegate and has NoFocus by default
                 focusPolicy: Qt.StrongFocus

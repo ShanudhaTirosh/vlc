@@ -21,7 +21,6 @@
 import QtQuick
 import QtQuick.Layouts
 
-
 import VLC.MainInterface
 import VLC.Style
 import VLC.Player
@@ -31,367 +30,304 @@ import VLC.Widgets as Widgets
 TracksPage {
     id: root
 
-    // Functions
-
-    function textFromValueA(value, locale) {
-        return qsTr("%1 ms").arg(Number(value).toLocaleString(locale, 'f', 0))
-    }
-
-    function valueFromTextA(text, locale) {
-        return Number.fromLocaleString(locale, text.substring(0, text.length - 3))
-    }
-
-    function textFromValueB(value, locale) {
-        return qsTr("%1 fps").arg(Number(value / 10).toLocaleString(locale, 'f', 3))
-    }
-
-    function valueFromTextB(text, locale) {
-        return Number.fromLocaleString(locale, text.substring(0, text.length - 4)) * 10
-    }
-
-    // Children
+    preferredWidth: VLCStyle.dp(480, VLCStyle.scale)
 
     ColumnLayout {
-        anchors.left: parent.left
-        anchors.right: parent.right
-
-        spacing: VLCStyle.margin_xsmall
+        anchors.fill: parent
+        spacing: VLCStyle.margin_normal
 
         Widgets.SubtitleLabel {
             Layout.fillWidth: true
-
-            text: qsTr("Subtitle synchronization")
-
-            color: root.colorContext.fg.primary
+            text: qsTr("Subtitle Synchronization")
+            color: VLCDesignTokens.textPrimary
+            font.pixelSize: VLCStyle.fontSize_normal
+            font.weight: Font.Bold
         }
 
-        ColumnLayout {
+        // ── Primary Subtitle Delay ───────────────────────────
+        Rectangle {
             Layout.fillWidth: true
-            Layout.topMargin: VLCStyle.margin_large
-
-            spacing: VLCStyle.margin_xxxsmall
-
-            Accessible.role: Accessible.Grouping
-            Accessible.name: qsTr("Primary subtitle delay")
+            Layout.preferredHeight: primarySyncCol.implicitHeight + VLCStyle.margin_normal * 2
+            color: VLCDesignTokens.bgDark2
+            radius: VLCDesignTokens.radiusCard
+            border.color: VLCDesignTokens.borderSubtle
+            border.width: 1
 
             DelayEstimator {
                 id: delayEstimatorPrimary
-
-                onDelayChanged: {
-                    Player.addSubtitleDelay(delayEstimatorPrimary.delay)
-                }
+                onDelayChanged: Player.addSubtitleDelay(delayEstimatorPrimary.delay)
             }
 
-            RowLayout {
-                Layout.fillWidth: true
+            ColumnLayout {
+                id: primarySyncCol
+                anchors.fill: parent
+                anchors.margins: VLCStyle.margin_normal
+                spacing: VLCStyle.margin_small
 
-                spacing: VLCStyle.margin_xsmall
-
-                Widgets.MenuCaption {
+                Widgets.DSPSlider {
+                    id: primarySlider
                     Layout.fillWidth: true
-                    Layout.alignment: Qt.AlignHCenter
-
-                    text: qsTr("Primary subtitle delay")
-
-                    color: root.colorContext.fg.primary
-                }
-
-                Widgets.SpinBoxExt {
-                    id: spinBoxA
-
-                    property bool update: false
-
-                    Layout.preferredWidth: VLCStyle.dp(128, VLCStyle.scale)
-
+                    label: qsTr("Primary Subtitle Delay")
+                    minValue: -10000
+                    maxValue: 10000
                     stepSize: 50
-                    from: -10000
-                    to: 10000
-
-                    textFromValue: root.textFromValueA
-                    valueFromText: root.valueFromTextA
-
-                    Navigation.parentItem: root
-                    Navigation.rightItem: resetA
-
-                    Component.onCompleted: {
-                        spinBoxA.value = Player.subtitleDelayMS
-
-                        spinBoxA.update = true
-                    }
+                    value: Player.subtitleDelayMS
+                    unit: " s"
+                    valueMultiplier: 0.001
+                    decimals: 3
 
                     onValueChanged: {
-                        if (update === false)
-                            return
-
-                        Player.subtitleDelayMS = spinBoxA.value
+                        if (Player.subtitleDelayMS !== value)
+                            Player.subtitleDelayMS = value
                     }
 
                     Connections {
                         target: Player
-
                         function onSubtitleDelayChanged() {
-                            spinBoxA.update = false
+                            primarySlider.value = Player.subtitleDelayMS
+                        }
+                    }
+                }
 
-                            spinBoxA.value = Player.subtitleDelayMS
+                RowLayout {
+                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignRight
+                    spacing: VLCStyle.margin_small
 
-                            spinBoxA.update = true
+                    Rectangle {
+                        Layout.preferredWidth: VLCStyle.dp(100, VLCStyle.scale)
+                        Layout.preferredHeight: VLCStyle.dp(28, VLCStyle.scale)
+                        radius: VLCDesignTokens.radiusButton
+                        color: delayEstimatorPrimary.isHeardTimeMarked ? VLCDesignTokens.primaryOrange : VLCDesignTokens.bgDark3
+                        border.color: VLCDesignTokens.borderMedium
+                        border.width: 1
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: qsTr("Voice Heard")
+                            font.pixelSize: VLCStyle.fontSize_small
+                            font.weight: Font.DemiBold
+                            color: delayEstimatorPrimary.isHeardTimeMarked ? "#FFFFFF" : VLCDesignTokens.textPrimary
                         }
 
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                delayEstimatorPrimary.markHeardTime()
+                            }
+                        }
                     }
-                }
 
-                Widgets.TextToolButton {
-                    id: resetA
+                    Rectangle {
+                        Layout.preferredWidth: VLCStyle.dp(100, VLCStyle.scale)
+                        Layout.preferredHeight: VLCStyle.dp(28, VLCStyle.scale)
+                        radius: VLCDesignTokens.radiusButton
+                        color: delayEstimatorPrimary.isSpottedTimeMarked ? VLCDesignTokens.primaryOrange : VLCDesignTokens.bgDark3
+                        border.color: VLCDesignTokens.borderMedium
+                        border.width: 1
 
-                    text: qsTr("Reset")
+                        Text {
+                            anchors.centerIn: parent
+                            text: qsTr("Text Seen")
+                            font.pixelSize: VLCStyle.fontSize_small
+                            font.weight: Font.DemiBold
+                            color: delayEstimatorPrimary.isSpottedTimeMarked ? "#FFFFFF" : VLCDesignTokens.textPrimary
+                        }
 
-                    focus: true
-
-                    Navigation.parentItem: root
-                    Navigation.leftItem: spinBoxA
-                    Navigation.downItem: resetB
-
-                    onClicked: {
-                        Player.subtitleDelayMS = 0
-                        delayEstimatorPrimary.reset()
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                delayEstimatorPrimary.markSpottedTime()
+                            }
+                        }
                     }
-                }
-            }
 
-            RowLayout {
-                Layout.fillWidth: true
+                    Rectangle {
+                        Layout.preferredWidth: VLCStyle.dp(60, VLCStyle.scale)
+                        Layout.preferredHeight: VLCStyle.dp(28, VLCStyle.scale)
+                        radius: VLCDesignTokens.radiusButton
+                        color: VLCDesignTokens.bgDark3
+                        border.color: VLCDesignTokens.borderMedium
+                        border.width: 1
 
-                Layout.alignment: Qt.AlignRight
+                        Text {
+                            anchors.centerIn: parent
+                            text: qsTr("Reset")
+                            font.pixelSize: VLCStyle.fontSize_small
+                            color: VLCDesignTokens.textSecondary
+                        }
 
-                spacing: VLCStyle.margin_small
-
-                Widgets.TrackDelayButton {
-                    id: voiceHeardA
-
-                    iconTxt: VLCIcons.check
-                    text: qsTr("Voice Heard")
-                    selected: delayEstimatorPrimary.isHeardTimeMarked
-
-                    onClicked: {
-                        delayEstimatorPrimary.markHeardTime()
-                        if (!delayEstimatorPrimary.isSpottedTimeMarked && delayEstimatorPrimary.isHeardTimeMarked)
-                            textSeenA.animate()
-                    }
-                }
-
-                Widgets.TrackDelayButton {
-                    id: textSeenA
-
-                    iconTxt: VLCIcons.check
-                    text: qsTr("Text Seen")
-                    selected: delayEstimatorPrimary.isSpottedTimeMarked
-
-                    onClicked: {
-                        delayEstimatorPrimary.markSpottedTime()
-                        if (!delayEstimatorPrimary.isHeardTimeMarked && delayEstimatorPrimary.isSpottedTimeMarked)
-                            voiceHeardA.animate()
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                Player.subtitleDelayMS = 0
+                                delayEstimatorPrimary.reset()
+                            }
+                        }
                     }
                 }
             }
         }
 
-        ColumnLayout {
+        // ── Secondary Subtitle Delay (if applicable) ─────────
+        Rectangle {
             Layout.fillWidth: true
-
-            spacing: VLCStyle.margin_xxxsmall
-
-            Accessible.role: Accessible.Grouping
-            Accessible.name: qsTr("Secondary subtitle delay")
+            Layout.preferredHeight: secondarySyncCol.implicitHeight + VLCStyle.margin_normal * 2
+            color: VLCDesignTokens.bgDark2
+            radius: VLCDesignTokens.radiusCard
+            border.color: VLCDesignTokens.borderSubtle
+            border.width: 1
 
             DelayEstimator {
                 id: delayEstimatorSecondary
-
-                onDelayChanged: {
-                    Player.addSecondarySubtitleDelay(delayEstimatorSecondary.delay)
-                }
+                onDelayChanged: Player.addSecondarySubtitleDelay(delayEstimatorSecondary.delay)
             }
 
-            RowLayout {
-                Layout.fillWidth: true
+            ColumnLayout {
+                id: secondarySyncCol
+                anchors.fill: parent
+                anchors.margins: VLCStyle.margin_normal
+                spacing: VLCStyle.margin_small
 
-                spacing: VLCStyle.margin_xsmall
-
-                Widgets.MenuCaption {
+                Widgets.DSPSlider {
+                    id: secondarySlider
                     Layout.fillWidth: true
-                    Layout.alignment: Qt.AlignHCenter
-
-                    text: qsTr("Secondary subtitle delay")
-
-                    color: root.colorContext.fg.primary
-                }
-
-                Widgets.SpinBoxExt {
-                    id: spinBoxB
-
-                    property bool update: false
-
-                    Layout.preferredWidth: VLCStyle.dp(128, VLCStyle.scale)
-
+                    label: qsTr("Secondary Subtitle Delay")
+                    minValue: -10000
+                    maxValue: 10000
                     stepSize: 50
-                    from: -10000
-                    to: 10000
-
-                    textFromValue: root.textFromValueA
-                    valueFromText: root.valueFromTextA
-
-                    Navigation.parentItem: root
-                    Navigation.rightItem: resetB
-
-                    Component.onCompleted: {
-                        value = Player.secondarySubtitleDelayMS
-
-                        update = true
-                    }
+                    value: Player.secondarySubtitleDelayMS
+                    unit: " s"
+                    valueMultiplier: 0.001
+                    decimals: 3
 
                     onValueChanged: {
-                        if (update === false)
-                            return
-
-                        Player.secondarySubtitleDelayMS = spinBoxB.value
+                        if (Player.secondarySubtitleDelayMS !== value)
+                            Player.secondarySubtitleDelayMS = value
                     }
 
                     Connections {
                         target: Player
-
                         function onSecondarySubtitleDelayChanged() {
-                            spinBoxB.update = false
-
-                            spinBoxB.value = Player.secondarySubtitleDelayMS
-
-                            spinBoxB.update = true
+                            secondarySlider.value = Player.secondarySubtitleDelayMS
                         }
                     }
                 }
 
-                Widgets.TextToolButton {
-                    id: resetB
+                RowLayout {
+                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignRight
+                    spacing: VLCStyle.margin_small
 
-                    text: qsTr("Reset")
+                    Rectangle {
+                        Layout.preferredWidth: VLCStyle.dp(100, VLCStyle.scale)
+                        Layout.preferredHeight: VLCStyle.dp(28, VLCStyle.scale)
+                        radius: VLCDesignTokens.radiusButton
+                        color: delayEstimatorSecondary.isHeardTimeMarked ? VLCDesignTokens.primaryOrange : VLCDesignTokens.bgDark3
+                        border.color: VLCDesignTokens.borderMedium
+                        border.width: 1
 
-                    Navigation.parentItem: root
-                    Navigation.leftItem: spinBoxB
-                    Navigation.upItem: resetA
-                    Navigation.downItem: resetC
+                        Text {
+                            anchors.centerIn: parent
+                            text: qsTr("Voice Heard")
+                            font.pixelSize: VLCStyle.fontSize_small
+                            font.weight: Font.DemiBold
+                            color: delayEstimatorSecondary.isHeardTimeMarked ? "#FFFFFF" : VLCDesignTokens.textPrimary
+                        }
 
-                    onClicked: {
-                        Player.secondarySubtitleDelayMS = 0
-                        delayEstimatorSecondary.reset()
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: delayEstimatorSecondary.markHeardTime()
+                        }
                     }
-                }
-            }
 
-            RowLayout {
-                Layout.fillWidth: true
+                    Rectangle {
+                        Layout.preferredWidth: VLCStyle.dp(100, VLCStyle.scale)
+                        Layout.preferredHeight: VLCStyle.dp(28, VLCStyle.scale)
+                        radius: VLCDesignTokens.radiusButton
+                        color: delayEstimatorSecondary.isSpottedTimeMarked ? VLCDesignTokens.primaryOrange : VLCDesignTokens.bgDark3
+                        border.color: VLCDesignTokens.borderMedium
+                        border.width: 1
 
-                Layout.alignment: Qt.AlignRight
+                        Text {
+                            anchors.centerIn: parent
+                            text: qsTr("Text Seen")
+                            font.pixelSize: VLCStyle.fontSize_small
+                            font.weight: Font.DemiBold
+                            color: delayEstimatorSecondary.isSpottedTimeMarked ? "#FFFFFF" : VLCDesignTokens.textPrimary
+                        }
 
-                spacing: VLCStyle.margin_xsmall
-
-                Widgets.TrackDelayButton {
-                    id: voiceHeardB
-
-                    text: qsTr("Voice Heard")
-                    iconTxt: VLCIcons.check
-                    selected: delayEstimatorSecondary.isHeardTimeMarked
-
-                    onClicked: {
-                        delayEstimatorSecondary.markHeardTime()
-                        if (!delayEstimatorSecondary.isSpottedTimeMarked && delayEstimatorSecondary.isHeardTimeMarked)
-                            textSeenB.animate()
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: delayEstimatorSecondary.markSpottedTime()
+                        }
                     }
-                }
 
-                Widgets.TrackDelayButton {
-                    id: textSeenB
+                    Rectangle {
+                        Layout.preferredWidth: VLCStyle.dp(60, VLCStyle.scale)
+                        Layout.preferredHeight: VLCStyle.dp(28, VLCStyle.scale)
+                        radius: VLCDesignTokens.radiusButton
+                        color: VLCDesignTokens.bgDark3
+                        border.color: VLCDesignTokens.borderMedium
+                        border.width: 1
 
-                    text: qsTr("Text Seen")
-                    iconTxt: VLCIcons.check
-                    selected: delayEstimatorSecondary.isSpottedTimeMarked
+                        Text {
+                            anchors.centerIn: parent
+                            text: qsTr("Reset")
+                            font.pixelSize: VLCStyle.fontSize_small
+                            color: VLCDesignTokens.textSecondary
+                        }
 
-                    onClicked: {
-                        delayEstimatorSecondary.markSpottedTime()
-                        if (!delayEstimatorSecondary.isHeardTimeMarked && delayEstimatorSecondary.isSpottedTimeMarked)
-                            voiceHeardB.animate()
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                Player.secondarySubtitleDelayMS = 0
+                                delayEstimatorSecondary.reset()
+                            }
+                        }
                     }
                 }
             }
         }
 
-        RowLayout {
+        // ── Subtitle Speed (fps) ─────────────────────────────
+        Rectangle {
             Layout.fillWidth: true
+            Layout.preferredHeight: speedCol.implicitHeight + VLCStyle.margin_normal * 2
+            color: VLCDesignTokens.bgDark2
+            radius: VLCDesignTokens.radiusCard
+            border.color: VLCDesignTokens.borderSubtle
+            border.width: 1
 
-            spacing: VLCStyle.margin_xsmall
+            ColumnLayout {
+                id: speedCol
+                anchors.fill: parent
+                anchors.margins: VLCStyle.margin_normal
+                spacing: VLCStyle.margin_small
 
-            Accessible.role: Accessible.Grouping
-            Accessible.name: qsTr("Subtitle Speed")
+                Widgets.DSPSlider {
+                    Layout.fillWidth: true
+                    label: qsTr("Subtitle Speed")
+                    minValue: 0
+                    maxValue: 600
+                    stepSize: 5
+                    value: Math.round(Player.subtitleFPS * 10)
+                    unit: " fps"
+                    valueMultiplier: 0.1
+                    decimals: 3
 
-            Widgets.MenuCaption {
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignHCenter
-
-                text: qsTr("Subtitle Speed")
-
-                color: root.colorContext.fg.primary
-            }
-
-            Widgets.SpinBoxExt {
-                id: spinBoxC
-
-                property bool update: false
-
-                Layout.preferredWidth: VLCStyle.dp(128, VLCStyle.scale)
-
-                stepSize: 1
-                from: 0
-                to: 100
-
-                textFromValue: root.textFromValueB
-                valueFromText: root.valueFromTextB
-
-                Navigation.parentItem: root
-                Navigation.rightItem: resetC
-
-                Component.onCompleted: {
-                    value = Player.subtitleFPS * 10
-
-                    update = true
-                }
-
-                onValueChanged: {
-                    if (update === false)
-                        return
-
-                    Player.subtitleFPS = value / 10
-                }
-
-                Connections {
-                    target: Player
-
-                    function onSecondarySubtitleDelayChanged() {
-                        spinBoxC.update = false
-
-                        value = Player.subtitleFPS / 10
-
-                        spinBoxC.update = true
+                    onValueChanged: {
+                        var fpsVal = value * 0.1
+                        if (Math.abs(Player.subtitleFPS - fpsVal) > 0.01)
+                            Player.subtitleFPS = fpsVal
                     }
                 }
-            }
-
-            Widgets.TextToolButton {
-                id: resetC
-
-                text: qsTr("Reset")
-
-                onClicked: spinBoxC.value = 10
-
-                Navigation.parentItem: root
-                Navigation.leftItem: spinBoxC
-                Navigation.upItem: resetB
             }
         }
     }

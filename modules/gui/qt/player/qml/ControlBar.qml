@@ -47,9 +47,9 @@ T.Pane {
     bottomPadding: VLCStyle.margin_xsmall
 
     readonly property real sliderY: mapFromItem(contentItem, 0, contentItem.sliderY).y
-    property int textPosition: ControlBar.TimeTextPosition.AboveSlider
+    property int textPosition: ControlBar.TimeTextPosition.LeftRightSlider
     property int identifier: -1
-    property real sliderHeight: VLCStyle.heightBar_xxsmall
+    property real sliderHeight: VLCDesignTokens.seekbarHeightResting
     property real bookmarksHeight: VLCStyle.controlBarBookmarksHeight
     property bool showRemainingTime: true
 
@@ -113,7 +113,7 @@ T.Pane {
     }
 
     background: Rectangle {
-        color: theme.bg.primary
+        color: VLCDesignTokens.bgDark1
     }
 
     contentItem: ColumnLayout {

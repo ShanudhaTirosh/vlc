@@ -203,16 +203,16 @@ QtObject {
     readonly property int gridCover_video_height: ( gridCover_video_width * 10.0 ) / 16
     readonly property int gridCover_video_border: MainCtx.dp(4, scale)
 
-    readonly property int gridCover_radius: MainCtx.dp(4, scale)
+    readonly property int gridCover_radius: radius_card
 
     readonly property int expandCover_music_height: MainCtx.dp(171, scale)
     readonly property int expandCover_music_width: MainCtx.dp(171, scale)
-    readonly property int expandCover_music_radius: gridCover_radius
+    readonly property int expandCover_music_radius: radius_card
     readonly property int expandDelegate_border: MainCtx.dp(1, scale)
 
     readonly property int artistGridCover_radius: MainCtx.dp(90, scale)
 
-    readonly property real mainView_topLeftRadius: MainCtx.dp(8, scale)
+    readonly property real mainView_topLeftRadius: radius_card
 
     //GridItem
     readonly property int gridItemTitle_topMargin: margin_xsmall + margin_xxxsmall
@@ -341,6 +341,34 @@ QtObject {
       return nb * VLCStyle.column_width + ( nb - 1 ) * VLCStyle.column_spacing;
     }
 
+    // Community Redesign Design Tokens
+    readonly property color accent_orange: "#D37918"
+    readonly property color accent_orange_light: "#E8851A"
+    readonly property color accent_orange_dark: "#AB6314"
+    readonly property color accent_purple: "#8A38F5"
+    readonly property color accent_pink: "#F052B3"
+    readonly property color accent_green: "#19A234"
+    readonly property color accent_lime: "#95D318"
+    readonly property color accent_red: "#FF3737"
+    readonly property color bg_black: "#090909"
+    readonly property color bg_dark1: "#151515"
+    readonly property color bg_dark2: "#1E1E1E"
+    readonly property color bg_dark3: "#262626"
+    readonly property color bg_input: "#0E0E0E"
+    readonly property color border_subtle: "#373737"
+    readonly property color text_primary: "#FFFFFF"
+    readonly property color text_secondary: "#8F8F8F"
+    readonly property color text_muted: "#6B6B6B"
+    readonly property int radius_button: MainCtx.dp(4, scale)
+    readonly property int button_radius: radius_button
+    readonly property int radius_panel: MainCtx.dp(6, scale)
+    readonly property int radius_card: MainCtx.dp(8, scale)
+    readonly property int radius_album_art: MainCtx.dp(12, scale)
+    readonly property int height_seekbar_resting: MainCtx.dp(4, scale)
+    readonly property int height_seekbar_hover: MainCtx.dp(8, scale)
+    readonly property int width_cone_volume: MainCtx.dp(88, scale)
+    readonly property int height_cone_volume: MainCtx.dp(18, scale)
+
     //dynamic margins based on screen width
     function dynamicAppMargins(width : int) : int {
         if (width < smallWidth)
@@ -352,3 +380,4 @@ QtObject {
                     (mediumWidth - smallWidth);
     }
 }
+

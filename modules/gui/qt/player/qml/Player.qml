@@ -717,6 +717,43 @@ FocusScope {
                             }
                         }
 
+                        RowLayout {
+                            id: waveformRow
+                            Layout.alignment: Qt.AlignHCenter
+                            Layout.topMargin: VLCStyle.margin_large
+                            Layout.preferredWidth: Math.min(parent.parent.width - VLCStyle.margin_xxlarge * 2, VLCStyle.dp(620, VLCStyle.scale))
+                            Layout.maximumWidth: parent.parent.width - VLCStyle.margin_large * 2
+                            spacing: VLCStyle.margin_small
+                            visible: Player.length.valid() && (centerContent.height > (y + height))
+
+                            Text {
+                                text: Player.time.formatHMS()
+                                font.pixelSize: VLCStyle.fontSize_small
+                                font.weight: Font.Medium
+                                color: VLCDesignTokens.textSecondary
+                            }
+
+                            WaveformSeekBar {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: VLCStyle.dp(44, VLCStyle.scale)
+                            }
+
+                            Text {
+                                text: (MainCtx.showRemainingTime && Player.remainingTime.valid())
+                                      ? "-" + Player.remainingTime.formatHMS()
+                                      : Player.length.formatHMS()
+                                font.pixelSize: VLCStyle.fontSize_small
+                                font.weight: Font.Medium
+                                color: VLCDesignTokens.textSecondary
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: MainCtx.showRemainingTime = !MainCtx.showRemainingTime
+                                }
+                            }
+                        }
+
                         Widgets.SubtitleLabel {
                             id: lyricsLabel
 

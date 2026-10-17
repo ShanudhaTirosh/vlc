@@ -50,17 +50,19 @@ Row {
             visible: index < root.labels.length
             text: index >= root.labels.length ? "" :  root.labels[index]
 
-            font.pixelSize: VLCStyle.fontSize_normal
+            font.pixelSize: VLCStyle.fontSize_small
+            font.weight: Font.DemiBold
 
             horizontalAlignment: Text.AlignRight
 
-            color: theme.fg.primary
+            color: VLCDesignTokens.textPrimary
 
             background: Rectangle {
                 anchors.fill: label
-                color: theme.bg.primary
-                opacity: 0.5
-                radius: VLCStyle.dp(3, VLCStyle.scale)
+                color: VLCDesignTokens.bgDark2
+                border.color: VLCDesignTokens.borderSubtle
+                border.width: 1
+                radius: VLCDesignTokens.radiusButton
             }
 
             Accessible.ignored: true

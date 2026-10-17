@@ -44,6 +44,44 @@ FirstRunWizard::FirstRunWizard( qt_intf_t *_p_intf, QWidget *parent)
     //       Qt Modern Windows Style dark mode
     setWizardStyle(QWizard::ModernStyle);
 
+    setStyleSheet(
+        "QWizard, QWizardPage {"
+        "    background-color: #121212;"
+        "    color: #EDEDED;"
+        "}"
+        "QLabel {"
+        "    color: #EDEDED;"
+        "}"
+        "QTextBrowser, QTextEdit {"
+        "    background-color: #1A1A1A;"
+        "    color: #CCCCCC;"
+        "    border: 1px solid #2B2B2B;"
+        "    border-radius: 4px;"
+        "}"
+        "QPushButton {"
+        "    background-color: #262626;"
+        "    color: #FFFFFF;"
+        "    border: 1px solid #333333;"
+        "    border-radius: 4px;"
+        "    padding: 6px 16px;"
+        "}"
+        "QPushButton:hover {"
+        "    background-color: #333333;"
+        "}"
+        "QPushButton:default {"
+        "    background-color: #D37918;"
+        "    border: 1px solid #D37918;"
+        "    color: #FFFFFF;"
+        "}"
+        "QPushButton:default:hover {"
+        "    background-color: #E58720;"
+        "}"
+        "QRadioButton, QCheckBox {"
+        "    color: #EDEDED;"
+        "    spacing: 8px;"
+        "}"
+    );
+
     /* Build the Ui */
     ui.setupUi( this );
 

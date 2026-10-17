@@ -217,8 +217,7 @@ T.Control {
                 return VLCIcons.play_filled
         }
 
-        color: cursorInside ? theme.accent
-                            : "black"  //foreground is always black
+        color: "#FFFFFF"  // Crisp white icon matching redesign mockups
 
         font.pixelSize: Math.round(parent.height / 1.7)
 
@@ -228,26 +227,17 @@ T.Control {
         horizontalAlignment: Text.AlignHCenter
 
         Accessible.ignored: true
-
-        DelayedBehavior on color {
-            delayedEnabled: theme.initialized
-
-            ColorAnimation {
-                duration: VLCStyle.duration_veryShort
-                easing.type: Easing.InOutSine
-            }
-        }
     }
 
     background: Item {
-        implicitWidth: height
-        implicitHeight: VLCStyle.icon_medium
+        implicitWidth: VLCStyle.dp(44, VLCStyle.scale)
+        implicitHeight: VLCStyle.dp(28, VLCStyle.scale)
 
         Widgets.AnimatedBackground {
             anchors.fill: parent
-            anchors.margins: -border.width * 4
+            anchors.margins: -border.width * 2
 
-            radius: width / 2
+            radius: VLCDesignTokens.radiusButton
             border.pixelAligned: false
 
             enabled: theme.initialized
@@ -258,11 +248,11 @@ T.Control {
         Rectangle {
             anchors.fill: parent
 
-            radius: width / 2
+            radius: VLCDesignTokens.radiusButton
 
             gradient: Gradient {
-                GradientStop { position: 0.0; color: "#e25b01" }
-                GradientStop { position: 1.0; color: "#f89a06" }
+                GradientStop { position: 0.0; color: mouseArea.pressed ? VLCDesignTokens.accentOrangeDeep : VLCDesignTokens.accentOrangeDark }
+                GradientStop { position: 1.0; color: mouseArea.containsMouse ? VLCDesignTokens.accentOrangeLight : VLCDesignTokens.accentOrange }
             }
 
             Widgets.RoundedRectangleShadow {
@@ -271,22 +261,22 @@ T.Control {
                 visible: opacity > 0
                 opacity: 0
 
-                blurRadius: VLCStyle.dp(9, VLCStyle.scale)
-                yOffset: VLCStyle.dp(4, VLCStyle.scale)
+                blurRadius: VLCStyle.dp(6, VLCStyle.scale)
+                yOffset: VLCStyle.dp(2, VLCStyle.scale)
 
-                color: theme.accent.alpha(0.29)
+                color: VLCDesignTokens.accentOrange.alpha(0.35)
             }
 
             Rectangle {
                 id: innerRectangle
 
-                color: "white"
+                color: Qt.rgba(1, 1, 1, 0.15)
 
                 anchors.fill: parent
-                anchors.margins: _diminished ? (parent.width / 2)
-                                             : VLCStyle.dp(2, VLCStyle.scale)
+                anchors.margins: _diminished ? (parent.height / 2)
+                                             : VLCStyle.dp(1, VLCStyle.scale)
 
-                radius: width / 2
+                radius: VLCDesignTokens.radiusButton
 
                 property bool _diminished: false
 
